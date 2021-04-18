@@ -444,7 +444,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
     /** Called when the activity is first created. */
     @Override
     protected void onCreate(Bundle savedInstanceState) throws SQLException {
-        Timber.d("onCreate()");
+        Timber.d("DeckPickerTest onCreate()");
 
         if (showedActivityFailedScreen(savedInstanceState)) {
             return;
@@ -541,6 +541,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
 
     /** The first call in showing dialogs for startup - error or success */
     private void handleStartup(boolean colOpen) {
+        Timber.i("DeckPickerTest handleStartup %b", colOpen);
         // TODO: colOpen is not colIsOpen() if called from onCreate - we should fix this mismatch of terms
         // or use the same variable if the semantics should have been equivalent
         if (colOpen) {
@@ -548,6 +549,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
             SharedPreferences sharedPrefs = AnkiDroidApp.getSharedPrefs(this);
             showStartupScreensAndDialogs(sharedPrefs, 0);
         } else {
+            Timber.i("DeckPickerTest handleStartup else %b", colOpen);
             // Show error dialogs
             StartupFailure failure = InitialActivity.getStartupFailureType(this);
             handleStartupFailure(failure);
@@ -557,6 +559,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
 
     @VisibleForTesting
     void handleStartupFailure(StartupFailure failure) {
+        Timber.i("DeckPickerTest failure %s", failure.toString());
         switch (failure) {
             case SD_CARD_NOT_MOUNTED:
                 Timber.i("SD card not mounted");
@@ -579,6 +582,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
             case DB_ERROR:
             default:
                 Timber.i("Displaying database error");
+                Timber.i("DeckPickerTest default DIALOG_LOAD_FAILED");
                 showDatabaseErrorDialog(DatabaseErrorDialog.DIALOG_LOAD_FAILED);
         }
     }
@@ -938,6 +942,7 @@ public class DeckPicker extends NavigationDrawerActivity implements
 
 
     public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Timber.i("DeckPickerTest onRequestPermissionsResult %s", colIsOpen());
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_STORAGE_PERMISSION && permissions.length == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
