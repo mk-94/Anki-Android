@@ -216,6 +216,7 @@ public class DeckPickerTest extends RobolectricTest {
 
     @Test
     public void databaseLockedWithPermissionIntegrationTest() {
+        AnkiDroidApp.sSentExceptionReportHack = false;
         try {
             BackendEmulatingOpenConflict.enable();
             InitialActivityTest.setupForDatabaseConflict();
@@ -223,6 +224,8 @@ public class DeckPickerTest extends RobolectricTest {
             DeckPickerEx d = super.startActivityNormallyOpenCollectionWithIntent(DeckPickerEx.class, new Intent());
 
             assertThat("A specific dialog for a conflict should be shown", d.mDatabaseErrorDialog, is(DatabaseErrorDialog.DIALOG_DB_LOCKED));
+
+            assertThat("No exception reports should be thrown", AnkiDroidApp.sSentExceptionReportHack, is(false));
         } finally {
             BackendEmulatingOpenConflict.disable();
             InitialActivityTest.setupForDefault();
