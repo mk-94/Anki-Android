@@ -50,7 +50,7 @@ public class GrantPermissionTest extends RobolectricTest {
 
 
     private static class DeckPickerEx extends DeckPicker {
-        private int mDatabaseErrorDialog;
+        private Integer mDatabaseErrorDialog;
 
         @Override
         public void showDatabaseErrorDialog(int id) {
