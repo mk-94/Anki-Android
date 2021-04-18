@@ -12,6 +12,7 @@ import com.ichi2.libanki.DeckConfig;
 import com.ichi2.libanki.sched.AbstractSched;
 import com.ichi2.testutils.BackendEmulatingOpenConflict;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -25,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import static com.ichi2.anki.DeckPicker.UPGRADE_VERSION_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -35,6 +37,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class DeckPickerTest extends RobolectricTest {
+
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
 
     @Test
     public void verifyCodeMessages() {
@@ -241,6 +248,33 @@ public class DeckPickerTest extends RobolectricTest {
             BackendEmulatingOpenConflict.disable();
             InitialActivityTest.setupForDefault();
         }
+    }
+
+    @Test
+    public void deckPickerShouldHavePermissionAfterFirstGrant() {
+        DeckPickerTest.DeckPickerEx d = super.startActivityNormallyOpenCollectionWithIntent(DeckPickerTest.DeckPickerEx.class, new Intent());
+        d.onStoragePermissionGranted();
+        InitialActivityTest.setupForDatabaseConflict();
+        assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
+
+        // no permissions -> grant permissions -> db locked
+        /*try {
+            //InitialActivityTest.setupForDefault();
+            BackendEmulatingOpenConflict.enable();
+
+            DeckPickerEx d = super.startActivityNormallyOpenCollectionWithIntent(DeckPickerEx.class, new Intent());
+
+            // grant permissions
+            InitialActivityTest.setupForDatabaseConflict();
+
+            d.onStoragePermissionGranted();
+
+            assertThat("A specific dialog for a conflict should be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIAL));
+        } finally {
+            BackendEmulatingOpenConflict.disable();
+            InitialActivityTest.setupForDefault();
+        }*/
+
     }
 
     private static class DeckPickerEx extends DeckPicker {
