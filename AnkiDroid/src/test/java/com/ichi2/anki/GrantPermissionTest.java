@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import com.ichi2.anki.dialogs.DatabaseErrorDialog;
+import com.ichi2.testutils.BackendEmulatingOpenConflict;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +24,14 @@ public class GrantPermissionTest extends RobolectricTest {
 
     @Test
     public void deckPickerShouldHavePermissionAfterFirstGrant() {
+        InitialActivityTest.setupForDefault();
+        BackendEmulatingOpenConflict.enable();
+
         GrantPermissionTest.DeckPickerEx d = super.startActivityNormallyOpenCollectionWithIntent(GrantPermissionTest.DeckPickerEx.class, new Intent());
+        //assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
         InitialActivityTest.setupForDatabaseConflict();
         d.onStoragePermissionGranted();
+        Timber.i("Test %s", d.mDatabaseErrorDialog);
         assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
 
     }
