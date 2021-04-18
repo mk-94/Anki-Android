@@ -24,15 +24,20 @@ public class GrantPermissionTest extends RobolectricTest {
 
     @Test
     public void deckPickerShouldHavePermissionAfterFirstGrant() {
+
+        //Start the App for the first time
+        //Push OK-Button
+        //Give initial permissions (Press allow)
+        //Check if DIALOG_LOAD_FAILED will not be shown
+
         InitialActivityTest.setupForDefault();
-        BackendEmulatingOpenConflict.enable();
 
         GrantPermissionTest.DeckPickerEx d = super.startActivityNormallyOpenCollectionWithIntent(GrantPermissionTest.DeckPickerEx.class, new Intent());
         //assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
         InitialActivityTest.setupForDatabaseConflict();
         d.onStoragePermissionGranted();
         Timber.i("Test %s", d.mDatabaseErrorDialog);
-        assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, not(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
+        assertThat("Permission granted Database Error Log should not be shown", d.mDatabaseErrorDialog, is(DatabaseErrorDialog.DIALOG_LOAD_FAILED));
 
     }
 
